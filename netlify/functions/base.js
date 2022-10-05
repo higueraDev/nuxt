@@ -5,17 +5,20 @@ const db = new Airtable({
 }).base(process.env.AIRTABLE_BASE_ID)
 
 const headers = {
+  /* Required for CORS support to work */
   'Access-Control-Allow-Origin': '*',
+  /* Required for cookies, authorization headers with HTTPS */
   'Access-Control-Allow-Credentials': true,
 }
 
 exports.handler = async function (evt) {
-  const articulos = await db('articles').select().all()
+  const articles = await db('articles').select().all()
+
   return {
     statusCode: 200,
     headers,
     body: JSON.stringify({
-      articulos,
+      articles,
     }),
   }
 }

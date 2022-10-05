@@ -24,18 +24,15 @@ export default {
   components: {
     VueMarkdown,
   },
+  asyncData({ $http, params }) {
+    const { slug } = params
+    const article = $http.$get(
+      `http://localhost:9999/.netlify/functions/article?slug=${slug}`
+    )
+    return article
+  },
   data() {
-    return {
-      post: {
-        slug: 'mi-primer-post',
-        title: 'Mi Primer Post',
-        author: 'Irene Hernández',
-        updated: '8/9/2000',
-        description: 'Lorem ipsum dolor sit amet',
-        cover: 'https://via.placeholder.com/1024px420',
-        content: '# Title\n\n## Second title\n\nLorem ipsum dolor sit amet',
-      },
-    }
+    return {}
   },
   head() {
     return {
@@ -47,6 +44,18 @@ export default {
         },
       ],
     }
+  },
+  computed: {
+    post() {
+      return {
+        title: this.article?.title,
+        author: this.article['author-name'][0],
+        updated: new Date(this.article?.updated).toLocaleDateString(),
+        description: this.article?.description,
+        cover: this.article?.cover[0].thumbnails.full.url,
+        content: this.article?.content,
+      }
+    },
   },
 }
 </script>

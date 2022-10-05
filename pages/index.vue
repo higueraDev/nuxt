@@ -27,6 +27,17 @@ export default {
       ],
     }
   },
+
+  async mounted() {
+    const url = `http://localhost:9999/.netlify/functions/articles`
+    const { articles } = await this.$http.$get(url)
+    this.articles = articles.map((a) => ({
+      ...a,
+      author: a['author-name'][0],
+      date: new Date(a.updated),
+      cover: a.cover[0]?.thumbnails.large.url,
+    }))
+  },
 }
 </script>
 

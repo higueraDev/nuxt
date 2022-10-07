@@ -40,10 +40,12 @@ export default {
   components: {
     VueMarkdown,
   },
-  asyncData({ params, $http, isDev }) {
+  async asyncData({ params, $http, isDev }) {
     const { slug } = params
-    const url = isDev ? 'http://localhost:9999' : 'https://miniblog-higueradev.netlify.app';
-    const article = $http.$get(
+    const url = isDev
+      ? 'http://localhost:9999'
+      : 'https://miniblog-higueradev.netlify.app'
+    const article = await $http.$get(
       `${url}/.netlify/functions/article?slug=${slug}`
     )
 
@@ -69,6 +71,7 @@ export default {
   },
   methods: {
     async createComment(comment) {
+      this.$nuxt.$loading.start()
       const url =
         location.hostname === 'localhost'
           ? 'http://localhost:9999'
@@ -77,6 +80,8 @@ export default {
         `${url}/.netlify/functions/comment?article=${this.article._id}`,
         { method: 'post', body: JSON.stringify(comment) }
       )
+      this.$nuxt.refresh()
+      this.$nuxt.$loading.finish()
     },
   },
 }

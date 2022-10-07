@@ -4,14 +4,30 @@
       <h1>{{ post.title }}</h1>
       <div class="author">
         <p>Por {{ post.author }}</p>
-        <small> Fecha de publicación {{ post.updated }} </small>
+        <small>Fecha de publicación: {{ post.updated }}</small>
       </div>
       <p>{{ post.description }}</p>
       <figure>
-        <img :src="post.cover" alt="cover" />
+        <img :src="post.cover" :alt="post.cover" />
         <figcaption>Portada - {{ post.title }}</figcaption>
       </figure>
       <VueMarkdown class="markdown">{{ post.content }}</VueMarkdown>
+      <div ref="comments" class="comments">
+        <h3 class="title">Comentarios</h3>
+        <p class="total-comments">
+          Hay {{ article['total-comments'] || 0 }} comentarios
+        </p>
+        <div class="comments-list">
+          <CommentItem
+            v-for="comment in comments"
+            :key="comment._id"
+            v-bind="comment"
+          />
+        </div>
+        <div class="add-comment">
+          <InputComment @submit="createComment" />
+        </div>
+      </div>
     </article>
   </div>
 </template>
@@ -24,25 +40,19 @@ export default {
   components: {
     VueMarkdown,
   },
-  asyncData({ $http, params }) {
+  asyncData({ params, $http, isDev }) {
     const { slug } = params
+    const url = isDev ? 'http://localhost:9999' : 'https://miniblog-platzi.netlify.app';
     const article = $http.$get(
-      `http://localhost:9999/.netlify/functions/article?slug=${slug}`
+      `${url}/.netlify/functions/article?slug=${slug}`
     )
+
     return article
-  },
-  data() {
-    return {}
   },
   head() {
     return {
-      title: this.post.title,
-      meta: [
-        {
-          name: 'description',
-          content: this.post?.description || '',
-        },
-      ],
+      title: this.post?.title,
+      meta: [{ name: 'description', content: this.post?.description || '' }],
     }
   },
   computed: {
@@ -55,6 +65,18 @@ export default {
         cover: this.article?.cover[0].thumbnails.full.url,
         content: this.article?.content,
       }
+    },
+  },
+  methods: {
+    async createComment(comment) {
+      const url =
+        location.hostname === 'localhost'
+          ? 'http://localhost:9999'
+          : 'https://miniblog-higueradev.netlify.app'
+      await fetch(
+        `${url}/.netlify/functions/comment?article=${this.article._id}`,
+        { method: 'post', body: JSON.stringify(comment) }
+      )
     },
   },
 }

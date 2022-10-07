@@ -46,7 +46,7 @@ export default {
     const url = isDev
       ? 'http://localhost:9999'
       : 'https://miniblog-higueradev.netlify.app'
-    const { article } = await $http.$get(
+    const article = await $http.$get(
       `${url}/.netlify/functions/article?slug=${slug}`
     )
 

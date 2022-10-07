@@ -31,7 +31,7 @@ export default {
   async mounted() {
     const baseUrl = location.hostname === 'localhost'
     ?'http://localhost:9999'
-    : 'https//miniblog-higueradev.netlify.app'
+    : 'https://miniblog-higueradev.netlify.app'
     const url = `${baseUrl}/.netlify/functions/articles`
     const { articles } = await this.$http.$get(url)
     this.articles = articles.map((a) => ({

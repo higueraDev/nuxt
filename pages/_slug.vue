@@ -12,24 +12,23 @@
         <figcaption>Portada - {{ post.title }}</figcaption>
       </figure>
       <VueMarkdown class="markdown">{{ post.content }}</VueMarkdown>
-      <client-only>
-        <div ref="comments" class="comments">
-          <h3 class="title">Comentarios</h3>
-          <p class="total-comments">
-            Hay {{ article['total-comments'] || 0 }} comentarios
-          </p>
-          <div class="comments-list">
-            <CommentItem
-              v-for="comment in comments"
-              :key="comment._id"
-              v-bind="comment"
-            />
-          </div>
-          <div class="add-comment">
-            <InputComment @submit="createComment" />
-          </div>
+
+      <div ref="comments" class="comments">
+        <h3 class="title">Comentarios</h3>
+        <p class="total-comments">
+          Hay {{ article['total-comments'] || 0 }} comentarios
+        </p>
+        <div class="comments-list">
+          <CommentItem
+            v-for="comment in comments"
+            :key="comment._id"
+            v-bind="comment"
+          />
         </div>
-      </client-only>
+        <div class="add-comment">
+          <InputComment @submit="createComment" />
+        </div>
+      </div>
     </article>
   </div>
 </template>
@@ -47,7 +46,7 @@ export default {
     const url = isDev
       ? 'http://localhost:9999'
       : 'https://miniblog-higueradev.netlify.app'
-    const article = await $http.$get(
+    const { article } = await $http.$get(
       `${url}/.netlify/functions/article?slug=${slug}`
     )
 

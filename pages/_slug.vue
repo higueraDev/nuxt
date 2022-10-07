@@ -57,6 +57,9 @@ export default {
       meta: [{ name: 'description', content: this.post?.description || '' }],
     }
   },
+  mounted() {
+    this.$nuxt.refresh()
+  },
   computed: {
     post() {
       return {

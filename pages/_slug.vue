@@ -42,7 +42,7 @@ export default {
   },
   asyncData({ params, $http, isDev }) {
     const { slug } = params
-    const url = isDev ? 'http://localhost:9999' : 'https://miniblog-platzi.netlify.app';
+    const url = isDev ? 'http://localhost:9999' : 'https://miniblog-higueradev.netlify.app';
     const article = $http.$get(
       `${url}/.netlify/functions/article?slug=${slug}`
     )

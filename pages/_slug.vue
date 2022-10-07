@@ -57,9 +57,6 @@ export default {
       meta: [{ name: 'description', content: this.post?.description || '' }],
     }
   },
-  mounted() {
-    this.$nuxt.refresh()
-  },
   computed: {
     post() {
       return {
@@ -71,6 +68,9 @@ export default {
         content: this.article?.content,
       }
     },
+  },
+  mounted() {
+    this.$nuxt.refresh()
   },
   methods: {
     async createComment(comment) {
